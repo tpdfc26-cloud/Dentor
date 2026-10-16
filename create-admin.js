@@ -1,0 +1,2 @@
+import 'dotenv/config';import pg from 'pg';import bcrypt from 'bcryptjs';
+const [,,name,email,password]=process.argv;if(!name||!email||!password||password.length<12)throw Error('Usage: node server/create-admin.js "Name" email@example.com "password-at-least-12-chars"');const pool=new pg.Pool({connectionString:process.env.DATABASE_URL});await pool.query('INSERT INTO users(name,email,password_hash,role) VALUES($1,$2,$3,$4)',[name,email.toLowerCase(),await bcrypt.hash(password,12),'admin']);await pool.end();console.log('Admin created');
